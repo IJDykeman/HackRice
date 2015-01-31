@@ -7,6 +7,7 @@ from helpers import *
 
 USER_DB_STRING = "users.db"
 PROPOSALS_DB_STRING = "proposals.db"
+AGREES_DB_STRING = "agrees.db"
 from string import Template
 
 
@@ -86,7 +87,7 @@ class StringGenerator(object):
 		
 		conn = sqlite3.connect(PROPOSALS_DB_STRING)
 		cursor=conn.cursor()
-		cursor.execute("SELECT proposal_name, proposal_id, description FROM proposals_db")
+		cursor.execute("SELECT proposal_name, proposal_id, description, min_num_people, max_num_people FROM proposals_db")
 		db_fetched = cursor.fetchall()	
 		return db_fetched
 	
@@ -103,10 +104,18 @@ class StringGenerator(object):
 		if db_fetched != None:
 			result += "<br>There are currently " + str(len(db_fetched))+ " proposals<br>"
 			for item in db_fetched:
-				result += "<a href=\"edit_card?proposal_id="+str(int(item[1])) + "\">"+str(item[0]) + "</a><br>"
+				result +=
+				result +=str(item[0]) + "<br>---"+str(item[2])+"("+item[3]+"-"+item[4]+" people)" + "<br>"
 		
 		result += "</body></html>"
 		return result
+
+	@cherrypy.expose
+	def agree_to_proposal(self,proposal_id=""):
+		with sqlite3.connect(AGREES_DB_STRING) as conn:
+			conn.execute("INSERT INTO agrees_db VALUES (?, ?)",
+				[username, proposal_id])
+		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
 	@cherrypy.expose
 	def propose_something_page(self):
@@ -129,8 +138,8 @@ class StringGenerator(object):
 	@cherrypy.expose
 	def proposal_db_insert(self, proposal_name="", proposal_description="", min_num_people="", max_num_people=""):
 		with sqlite3.connect(PROPOSALS_DB_STRING) as c:
-			c.execute("INSERT INTO proposals_db VALUES (?, ?, ?, ?, ?, ?)",
-				[self.get_num_proposals()+1, proposal_name,  [], proposal_description, int(min_num_people), int(max_num_people)])
+			c.execute("INSERT INTO proposals_db VALUES (?, ?, ?, ?, ?)",
+				[self.get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
 		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
 	@cherrypy.expose
@@ -167,6 +176,8 @@ def delete_databases():
 		con.execute("DROP TABLE username_password_db")
 	with sqlite3.connect(PROPOSALS_DB_STRING) as con:
 		con.execute("DROP TABLE proposals_db")
+	with sqlite3.connect(AGREES_DB_STRING) as con:
+		con.execute("DROP TABLE agrees_db")
 
 def cleanup_database():
 	"""
@@ -185,7 +196,9 @@ def setup_database():
 	with sqlite3.connect(USER_DB_STRING) as con:
 		con.execute("CREATE TABLE username_password_db (username, password)")
 	with sqlite3.connect(PROPOSALS_DB_STRING) as con:
-		con.execute("CREATE TABLE proposals_db (proposal_id, proposal_name, people, description, min_people, max_people)")
+		con.execute("CREATE TABLE proposals_db (proposal_id, proposal_name, description, min_people, max_people)")
+	with sqlite3.connect(AGREES_DB_STRING) as con:
+		con.execute("CREATE TABLE agrees_db (proposal_id, username)")
 
 
 if __name__ == '__main__':
