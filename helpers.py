@@ -1,3 +1,5 @@
+import hashlib
+
 def get_num_rows(dbFile):
 	connection = sqlite3.connect(dbFile)
 	cursor = connection.cursor()
