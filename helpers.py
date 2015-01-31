@@ -49,4 +49,12 @@ def get_num_rows(dbFile):
  
 
 def get_hash(password):
+	password = password.encode('utf-8')
 	return hashlib.sha1(password).hexdigest()
+
+def get_n_selector(n, name):
+	result = "<select name="+name+">"
+	for i in range(2,n+1):
+		result += "<option value="+str(i)+">"+str(i)+"</option>"
+	result +="	</select>"
+	return result

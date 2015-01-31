@@ -65,55 +65,73 @@ class StringGenerator(object):
 			if(get_hash(password) == db_fetched):
 				cherrypy.session['username'] = username
 				#password is good
-				return """<meta http-equiv="refresh" content="1;url=college_list" />"""
+				return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 			else:
 				return """<meta http-equiv="refresh" content="1;url=index?message=wrong password" />"""
 	
 	@cherrypy.expose
 	def make_new_user(self, username="", password = ""):
 		if(username != ""):
-			with sqlite3.connect(USER_DB_STRING) as c:
-				c.execute("INSERT INTO username_password_db VALUES (?, ?)",
+			with sqlite3.connect(USER_DB_STRING) as conn:
+				conn.execute("INSERT INTO username_password_db VALUES (?, ?)",
 					[username, get_hash(password)])
 			#print "put it in"
 			return self.logged_in_page(username,password)
 		else:
-			return """<meta http-equiv="refresh" content="1;url=index?message=please enter a username" />"""
+			return """<meta http-equiv="refresh" content="1;url=index?message=Please enter a username" />"""
 		#return some_string
 	
 
-	def get_college_card_list(self):
+	def get_proposal_list(self):
 		
 		conn = sqlite3.connect(PROPOSALS_DB_STRING)
 		cursor=conn.cursor()
-		cursor.execute("SELECT college_name, proposal_id, description FROM proposals_db WHERE username=?",
-				[cherrypy.session['username'] ])
+		cursor.execute("SELECT proposal_name, proposal_id, description FROM proposals_db")
 		db_fetched = cursor.fetchall()	
 		return db_fetched
 	
 
-	def get_num_college_cards(self):
-		return len(self.get_college_card_list())
+	def get_num_proposals(self):
+		return len(self.get_proposal_list())
 
 
 	@cherrypy.expose
-	def college_list(self):
-		result = "<html><head></head><body>"+cherrypy.session['username']+"'s' college list: <br>"
-		db_fetched = self.get_college_card_list()	
+	def proposal_list_page(self):
+		result = "<html><head></head><body>"+cherrypy.session['username']+"'s' proposal list: "
+		result += """<br><a href="propose_something_page">Propose something!</a>"""
+		db_fetched = self.get_proposal_list()	
 		if db_fetched != None:
-			result += "<br>you have entered " + str(len(db_fetched))+ " schools<br>"
+			result += "<br>There are currently " + str(len(db_fetched))+ " proposals<br>"
 			for item in db_fetched:
 				result += "<a href=\"edit_card?proposal_id="+str(int(item[1])) + "\">"+str(item[0]) + "</a><br>"
-		result += """<br><a href="new_card">add a college card!</a>"""
+		
 		result += "</body></html>"
 		return result
 
 	@cherrypy.expose
-	def new_card(self):
+	def propose_something_page(self):
+		result = "<html><head></head><body>"
+		result += """
+		<form method="post" action="proposal_db_insert">
+			  Proposal name<input type="text" value="" name="proposal_name" /><br>
+			  Proposal description<input type="text" value="" name="proposal_description" />
+				  
+				  <br><br>
+				  Minimum number of people
+				  """
+		result += get_n_selector(20, "max_num_people")
+		result += "Maximum number of people"
+		result += get_n_selector(50,"min_num_people")
+		result += "<button type=\"submit\">Propose!</button></form>"
+		result += "</body></html>"
+		return result
+
+	@cherrypy.expose
+	def proposal_db_insert(self, proposal_name="", proposal_description="", min_num_people="", max_num_people=""):
 		with sqlite3.connect(PROPOSALS_DB_STRING) as c:
-			c.execute("INSERT INTO proposals_db VALUES (?, ?, ?, ?)",
-				[self.get_num_college_cards()+1, cherrypy.session['username'],  "new school", "this is a description"])
-		return """<meta http-equiv="refresh" content="1;url=college_list" />"""
+			c.execute("INSERT INTO proposals_db VALUES (?, ?, ?, ?, ?, ?)",
+				[self.get_num_proposals()+1, proposal_name,  [], proposal_description, int(min_num_people), int(max_num_people)])
+		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
 	@cherrypy.expose
 	def edit_card(self, proposal_id = ""):
@@ -132,39 +150,43 @@ class StringGenerator(object):
 				  <button type="submit">Save</button>
 			</form>
 			<br>
-			<a href="college_list">Back to card list</a>
+			<a href="proposal_list_page">Back to card list</a>
 		  </body>
 		</html>""")
 		
 		return str (result.substitute(school_name = db_fetched[0], description = db_fetched[1], cardid = proposal_id))
 
 	@cherrypy.expose
-	def save_card_form(self, school_name="", description="", proposal_id=""):
+	def save_card_form(self, school_name="", proposal_description="", proposal_id=""):
 		with sqlite3.connect(PROPOSALS_DB_STRING) as c:
 			c.execute("UPDATE proposals_db SET college_name=?, description=? WHERE proposal_id=? and username=?",
 				[school_name, description, int(proposal_id), cherrypy.session['username']  ])
 		return "<meta http-equiv=\"refresh\" content=\"1;url=edit_card?proposal_id="+proposal_id + "\" />"
-
-def setup_database():
-	"""
-	Create the `username_password_db` table in the database
-	on server startup
-	"""
-	print("startup")
+def delete_databases():
 	with sqlite3.connect(USER_DB_STRING) as con:
-		con.execute("CREATE TABLE username_password_db (username, password)")
+		con.execute("DROP TABLE username_password_db")
 	with sqlite3.connect(PROPOSALS_DB_STRING) as con:
-		con.execute("CREATE TABLE proposals_db (proposal_id, name, people, description, min_people, max_people)")
+		con.execute("DROP TABLE proposals_db")
 
 def cleanup_database():
 	"""
 	Destroy the `username_password_db` table from the database
 	on server shutdown.
 	"""
+	delete_databases()
+
+def setup_database():
+	"""
+	Create the `username_password_db` table in the database
+	on server startup
+	"""
+
+	print("startup")
 	with sqlite3.connect(USER_DB_STRING) as con:
-		con.execute("DROP TABLE username_password_db")
+		con.execute("CREATE TABLE username_password_db (username, password)")
 	with sqlite3.connect(PROPOSALS_DB_STRING) as con:
-		con.execute("DROP TABLE proposals_db")
+		con.execute("CREATE TABLE proposals_db (proposal_id, proposal_name, people, description, min_people, max_people)")
+
 
 if __name__ == '__main__':
 	conf = {
@@ -175,6 +197,6 @@ if __name__ == '__main__':
 	cherrypy.engine.subscribe('start', setup_database)
 	cherrypy.engine.subscribe('stop', cleanup_database)
 	cherrypy.quickstart(StringGenerator(), '/', conf)
-	setup_database()
+
 
 
