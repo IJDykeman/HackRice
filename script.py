@@ -4,6 +4,7 @@ import sqlite3
 import cherrypy
 import hashlib
 from helpers import *
+import os, os.path
 
 USER_DB_STRING = "users.db"
 PROPOSALS_DB_STRING = "proposals.db"
@@ -13,19 +14,54 @@ from string import Template
 
 class StringGenerator(object):
 	@cherrypy.expose
-	def index(self, message = "Welcome"):
-		result = Template("""<html>
-			<head></head>
-			<body>
-			$tell_user
-			<form method="post" action="logged_in_page">
-			  <input type="text" value="" name="username" />
-			  <input type="text" value="" name="password" />
-				  <button type="submit">Sign in</button>
-			</form>
-			<a href="new_user_page">sign up to start making cards</a>
-		  </body>
-		</html>""")
+	def index(self, message = ""):
+		result = Template(
+
+			"""
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	meta charset="UTF-8">
+	title>Login</title>
+	link rel='stylesheet' type='text/css' href='/static/css/login_style.css'/>
+	link rel="stylesheet" href="/static/css/bootstrap.css">
+</head>
+<body>
+	<h1>Party Central - $tell_user</h1>
+	div class="col-md-4">
+	<form id="login-form" method="post" action="logged_in_page">
+	fieldset>
+	h3>
+	mail
+	/h3>
+	input type="text" value="" name="username" />
+	h3>
+	password
+	/h3>
+	input type="password" value="" name="password" />
+	div id="signup-button">
+	p>
+	button type="submit" class="btn btn-primary">Log In</button>
+	/p>
+	/div>
+
+	/fieldset>
+	/form>
+	fieldset id="signup">
+	p>
+	on't have an account?
+	/p>
+	p>
+	a href="new_user_page" class="btn btn-success">Sign up</a>
+	/p>
+	/fieldset>
+	/div>
+
+
+</body>
+</html>
+
+			""")
 		
 		return str (result.substitute(tell_user = message))
 
@@ -236,9 +272,15 @@ def setup_database():
 if __name__ == '__main__':
 	conf = {
 		'/': {
-			'tools.sessions.on': True
+			'tools.sessions.on': True,
+			'tools.staticdir.root': os.path.abspath(os.getcwd())
+		},
+		'/static': {
+			'tools.staticdir.on': True,
+			'tools.staticdir.dir': './public'
 		}
 	}
+
 	cherrypy.engine.subscribe('start', setup_database)
 	cherrypy.engine.subscribe('stop', cleanup_database)
 	cherrypy.quickstart(StringGenerator(), '/', conf)
