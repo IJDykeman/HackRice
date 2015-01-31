@@ -87,7 +87,7 @@ class StringGenerator(object):
 		
 		conn = sqlite3.connect(PROPOSALS_DB_STRING)
 		cursor=conn.cursor()
-		cursor.execute("SELECT proposal_name, proposal_id, description, min_num_people, max_num_people FROM proposals_db")
+		cursor.execute("SELECT proposal_name, proposal_id, description, min_people, max_people FROM proposals_db")
 		db_fetched = cursor.fetchall()	
 		return db_fetched
 	
@@ -104,8 +104,10 @@ class StringGenerator(object):
 		if db_fetched != None:
 			result += "<br>There are currently " + str(len(db_fetched))+ " proposals<br>"
 			for item in db_fetched:
-				result +=
-				result +=str(item[0]) + "<br>---"+str(item[2])+"("+item[3]+"-"+item[4]+" people)" + "<br>"
+
+
+				result += """<a href = "agree_to_proposal?proposal_id=\""""+str(item[1])+""">Click to Attend</a>"""
+				result +=str(item[0]) + "<br>---"+str(item[2])+"("+str(item[3])+"-"+str(item[4])+" people)" + "<br>"
 		
 		result += "</body></html>"
 		return result
