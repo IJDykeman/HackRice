@@ -55,7 +55,7 @@ class StringGenerator(object):
                 <a href="new_user_page" class="btn btn-success">Sign up</a>
             </p>
         </fieldset>
-    </div>
+
 
 
 
@@ -67,19 +67,44 @@ class StringGenerator(object):
 
 	@cherrypy.expose
 	def new_user_page(self, username="", password = ""):
-		return """<html>
-			<head></head>
-			<body>
-			<form method="post" action="make_new_user">
-			  <input type="text" value="" name="username" />
-			  <input type="text" value="" name="password" />
-				  <button type="submit">Sign up</button>
-			</form>
-			<a href="index">log in</a>
-		  </body>
+		return """
+
+		<!DOCTYPE html>
+		<html>
+		<head lang="en">
+		    <meta charset="UTF-8">
+		    <title>Signup</title>
+		    <link rel='stylesheet' type='text/css' href='static/css/signup_style.css'/>
+		    <link rel="stylesheet" href="static/css/bootstrap.css">
+		</head>
+		<body>
+
+		        <form id="signup-form" action="make_new_user" method="post">
+		            <fieldset>
+		                <h3>
+		                    Email
+		                </h3>
+		                <input type="text" value="" name="username" />
+		                <h3>
+		                    Password
+		                </h3>
+		                <input type="password" value="" name="password" />
+		                <h3>
+		                    Confirm Password
+		                </h3>
+		                <input type="password" value="" name="confirm_pass"/>
+		                <div id="signup-button">
+		                    <p>
+		                        <a href="index" class="btn btn-primary">Log In</a>
+		                    </p>
+		                </div>
+
+		            </fieldset>
+		        </form>
+
+		</body>
 		</html>"""
-
-
+		
 
 	@cherrypy.expose
 	def logged_in_page(self, username, password):
