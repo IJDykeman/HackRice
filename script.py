@@ -210,7 +210,7 @@ class StringGenerator(object):
 				else:
 					button_text = "I'm down."
 				result += """
-						<h3>{}<div class="success-button" align="right" id="{}"><a class="btn btn-success">{}</a></div></h3>
+						<h3>{}<div class="success-button" align="right" id="{}"><a class="btn btn-success btn-sm">{}</a></div></h3>
 						<div >
 
 					        <p>{}</p>
@@ -221,26 +221,14 @@ class StringGenerator(object):
 					    """.format(str(item[0]), proposal_id, button_text, str(item[2]),str(item[3]),  str(item[4]))
 				
 
-				'''
-				username = cherrypy.session['username']
-				result += """<a href = "agree_to_proposal?proposal_id="""+proposal_id+"""\">"""
-				if username in agreement_map and not int(proposal_id) in agreement_map[username]:
-					result += "Click to Attend"
-				elif not username in agreement_map:
-					result += "Click to Attend"
-				else:
-					result += "You are attending"
-				result += "</a>"
-				result +=str(item[0]) + "<br>---"+str(item[2])+"("+str(item[3])+"-"+str(item[4])+" people)" + "<br>"
-				'''
-		
+
 		result += """</div>
 
 			<script src="static/js/jquery.js"></script>
 			<script src="static/js/jquery-ui.min.js"></script>
 			<script src="static/js/proposal_script.js"></script>
 			<script>
-			    $('.success-button').click(function(){
+			    $(".btn.btn-success.btn-sm").click(function(){
 			        var id_num = $(this).attr('id');
 			        jQuery.ajax("/agree_to_proposal?proposal_id="+id_num);
 
