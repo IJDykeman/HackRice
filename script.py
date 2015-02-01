@@ -158,9 +158,9 @@ class StringGenerator(object):
 			<head lang="en">
 			    <meta charset="UTF-8">
 			    <title>Partytown</title>
-			    <link rel="stylesheet" href="static/css/bootstrap.css">
-			    <link rel="stylesheet" href="static/css/proposal_page.css">
-			    <link rel="stylesheet" href="static/css/jquery-ui.css">
+			    <link rel="stylesheet" href="css/bootstrap.css">
+			    <link rel="stylesheet" href="css/proposal_page.css">
+			    <link rel="stylesheet" href="jquery-ui.css">
 
 
 			</head>
@@ -170,7 +170,7 @@ class StringGenerator(object):
 			        <div class="col-md-4">
 			        </div>
 			        <div class="col-md-4">
-			            <a href="propose_something_page" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
+			            <a href="#" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
 			        </div>
 			        <div class="col-md-4" align="right" id="logout">
 			            <a href="login_page.html" class="btn btn-info">Logout</a>
@@ -186,7 +186,7 @@ class StringGenerator(object):
 		db_fetched = get_proposal_list()	
 		if db_fetched != None:
 			for item in db_fetched:
-				'''
+
 				result += "<h3>"+str(item[2])+"</h3>"
 				result += "<p><b>Minimum size:</b> "+ str(item[3]) + "</p>"
 				result += "<p><b>Maximum size:</b> " + str(item[4]) + "</p>"
@@ -199,26 +199,11 @@ class StringGenerator(object):
 					result += "Let's do it"
 				else:
 					result += "I'm down."
-					'''
-				proposal_id = str(item[1])
-				button_text = ""
-				username = cherrypy.session['username']
-				if username in agreement_map and not int(proposal_id) in agreement_map[username]:
-					button_text = "Let's do it"
-				elif not username in agreement_map:
-					button_text = "Let's do it"
-				else:
-					button_text = "I'm down."
-				result += """
-						<h3>{}</h3>
-						<div >
-					        <p>{}</p>
-					        <p><b>Minimum size:</b> {}</p>
-					        <p><b>Maximum size:</b> {}</p>
-					        <div class="success-button" align="center"><a href="agree_to_proposal?proposal_id={}" class="btn btn-success">{}</a></div>
-					    </div>
-					    """.format(str(item[0]), str(item[2]),str(item[3]),  str(item[4]) , proposal_id, button_text)
-				
+
+
+				result += "</a></div>"
+
+
 
 				'''
 				username = cherrypy.session['username']
@@ -235,9 +220,9 @@ class StringGenerator(object):
 		
 		result += """</div>
 
-			<script src="static/js/jquery.js"></script>
-			<script src="static/js/jquery-ui.min.js"></script>
-			<script src="static/js/proposal_script.js"></script>
+			<script src="jquery.js"></script>
+			<script src="jquery-ui.min.js"></script>
+			<script src="js/proposal_script.js"></script>
 			</body>
 			</html>"""
 		return result
