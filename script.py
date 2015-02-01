@@ -28,7 +28,7 @@ class StringGenerator(object):
 </head>
 <body>
 	<h1>Party Central $tell_user</h1>
-    <div class="col-md-4">
+
         <form id="login-form" action="logged_in_page" method="post">
             <fieldset>
                 <h3>
@@ -55,7 +55,7 @@ class StringGenerator(object):
                 <a href="new_user_page" class="btn btn-success">Sign up</a>
             </p>
         </fieldset>
-    </div>
+
 
 
 
@@ -78,7 +78,7 @@ class StringGenerator(object):
 		    <link rel="stylesheet" href="static/css/bootstrap.css">
 		</head>
 		<body>
-		    <div class="col-md-4">
+
 		        <form id="signup-form" action="make_new_user" method="post">
 		            <fieldset>
 		                <h3>
@@ -101,24 +101,10 @@ class StringGenerator(object):
 
 		            </fieldset>
 		        </form>
-		    </div>
+
 		</body>
 		</html>"""
-		'''
-
-				"""<html>
-					<head></head>
-					<body>
-					<form method="post" action="make_new_user">
-					  <input type="text" value="" name="username" />
-					  <input type="text" value="" name="password" />
-						  <button type="submit">Sign up</button>
-					</form>
-					<a href="index">log in</a>
-				  </body>
-				</html>"""
-
-		'''
+		
 
 	@cherrypy.expose
 	def logged_in_page(self, username, password):
