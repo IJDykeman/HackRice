@@ -30,7 +30,7 @@
         <p><b>Maximum size:</b> 10</p>
 
     </div>
-    <h3>21 drinks, 21 years <div class="success-button" align="right"><a href="#" class="btn btn-success btn-sm">Let's do it.</a></div></h3>
+    <h3>21 drinks, 21 years <div class="success-button" align="right"><a href="login_page.html" class="btn btn-success btn-sm">Let's do it.</a></div></h3>
     <div>
         <p>Sounds like an average night.</p>
         <p><b>Minimum size:</b> 2</p>
@@ -53,5 +53,10 @@
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/proposal_script.js"></script>
+<script>
+    $('.success-button').click(function(){
+        $(this).ajax();
+    });
+</script>
 </body>
 </html>

@@ -3,9 +3,8 @@
  */
 $(document).ready(function(){
     $( "#events" ).accordion();
-    $('#events.success-button').click(function(){
+    $('.success-button').click(function(){
 
-        (this).replaceWith("<a href='#' class='btn btn-danger'>Danger</a>");
-
+        $(this).replaceWith("<div align='right'><a href='#' class='btn btn-down btn-sm'>I'm down</a></div>");
     });
 });
