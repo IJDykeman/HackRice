@@ -21,45 +21,43 @@ class StringGenerator(object):
 <!DOCTYPE html>
 <html>
 <head lang="en">
-	meta charset="UTF-8">
-	title>Login</title>
-	link rel='stylesheet' type='text/css' href='/static/css/login_style.css'/>
-	link rel="stylesheet" href="/static/css/bootstrap.css">
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel='stylesheet' type='text/css' href='/static/css/login_style.css'/>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
 </head>
 <body>
-	<h1>Party Central - $tell_user</h1>
-	div class="col-md-4">
-	<form id="login-form" method="post" action="logged_in_page">
-	fieldset>
-	h3>
-	mail
-	/h3>
-	input type="text" value="" name="username" />
-	h3>
-	password
-	/h3>
-	input type="password" value="" name="password" />
-	div id="signup-button">
-	p>
-	button type="submit" class="btn btn-primary">Log In</button>
-	/p>
-	/div>
+	<h1>Party Central $tell_user</h1>
+    <div class="col-md-4">
+        <form id="login-form" action="logged_in_page" method="post">
+            <fieldset>
+                <h3>
+                    Email
+                </h3>
+                <input type="text" value="" name="username" />
+                <h3>
+                    Password
+                </h3>
+                <input type="password" value="" name="password" />
+                <div id="signup-button">
+                    <p>
+                        <button type="submit" class="btn btn-primary">Log In</button>
+                    </p>
+                </div>
 
-	/fieldset>
-	/form>
-	fieldset id="signup">
-	p>
-	on't have an account?
-	/p>
-	p>
-	a href="new_user_page" class="btn btn-success">Sign up</a>
-	/p>
-	/fieldset>
-	/div>
+            </fieldset>
+        </form>
+        <fieldset id="signup">
+            <p>
+                Don't have an account?
+            </p>
+            <p>
+                <a href="new_user_page" class="btn btn-success">Sign up</a>
+            </p>
+        </fieldset>
+    </div>
 
 
-</body>
-</html>
 
 			""")
 		
