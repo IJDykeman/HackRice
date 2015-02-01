@@ -210,9 +210,9 @@ class StringGenerator(object):
 				else:
 					button_text = "I'm down."
 				result += """
-						<h3>{}</h3>
+						<h3>{}<div class="success-button" align="right" id="{}"><a class="btn btn-success">{}</a></div></h3>
 						<div >
-						<div class="success-button" align="right"><a href="agree_to_proposal?proposal_id={}" class="btn btn-success">{}</a></div>
+
 					        <p>{}</p>
 					        <p><b>Minimum size:</b> {}</p>
 					        <p><b>Maximum size:</b> {}</p>
@@ -239,6 +239,13 @@ class StringGenerator(object):
 			<script src="static/js/jquery.js"></script>
 			<script src="static/js/jquery-ui.min.js"></script>
 			<script src="static/js/proposal_script.js"></script>
+			<script>
+			    $('.success-button').click(function(){
+			        var id_num = $(this).attr('id');
+			        jQuery.ajax("/agree_to_proposal?proposal_id="+id_num);
+
+			    });
+			</script>
 			</body>
 			</html>"""
 		return result
