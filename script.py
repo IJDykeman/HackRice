@@ -95,7 +95,7 @@ class StringGenerator(object):
 		                <input type="password" value="" name="confirm_pass"/>
 		                <div id="signup-button">
 		                    <p>
-		                        <a href="index" class="btn btn-primary">Log In</a>
+		                        <a href="proposal_list_page" class="btn btn-primary">Log In</a>
 		                    </p>
 		                </div>
 
