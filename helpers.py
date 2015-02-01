@@ -1,4 +1,46 @@
 import hashlib
+import sqlite3
+
+
+
+
+
+
+
+USER_DB_STRING = "users.db"
+PROPOSALS_DB_STRING = "proposals.db"
+AGREES_DB_STRING = "agrees.db"
+
+
+def get_proposal_list():
+	
+	conn = sqlite3.connect(PROPOSALS_DB_STRING)
+	cursor=conn.cursor()
+	cursor.execute("SELECT proposal_name, proposal_id, description, min_people, max_people FROM proposals_db")
+	db_fetched = cursor.fetchall()	
+	return db_fetched
+
+def get_num_proposals():
+	return len(get_proposal_list())
+
+def get_agreement_map():
+	"""
+	returns a mapping of user -> set of events she agrees to
+	"""
+	conn = sqlite3.connect(AGREES_DB_STRING)
+	cursor=conn.cursor()
+	cursor.execute("SELECT username, proposal_id FROM agrees_db")
+	db_fetched = cursor.fetchall()	
+	result = {}
+	for item in db_fetched:
+		if not item[0] in result:
+			result[item[0]] = {int(item[1])}
+		else:
+			result[item[0]].add(int(item[1]))
+	return result
+
+
+
 
 def get_num_rows(dbFile):
 	connection = sqlite3.connect(dbFile)
