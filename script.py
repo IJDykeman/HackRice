@@ -28,7 +28,7 @@ class StringGenerator(object):
 </head>
 <body>
 	<h1>Party Central $tell_user</h1>
-    <div class="col-md-4">
+
         <form id="login-form" action="logged_in_page" method="post">
             <fieldset>
                 <h3>
@@ -92,10 +92,10 @@ class StringGenerator(object):
 		                <h3>
 		                    Confirm Password
 		                </h3>
-		                <input type="password" value="" name="confirm_pass"/>
+		                <input type="password" value="" name="confirm_password"/>
 		                <div id="signup-button">
 		                    <p>
-		                        <a href="proposal_list_page" class="btn btn-primary">Log In</a>
+		                        <button ty[e = "submit">Log In</a>
 		                    </p>
 		                </div>
 
@@ -130,7 +130,7 @@ class StringGenerator(object):
 				return """<meta http-equiv="refresh" content="1;url=index?message=wrong password" />"""
 	
 	@cherrypy.expose
-	def make_new_user(self, username="", password = ""):
+	def make_new_user(self, username="", password = "", confirm_password=""):
 		if(username != ""):
 			with sqlite3.connect(USER_DB_STRING) as conn:
 				conn.execute("INSERT INTO username_password_db VALUES (?, ?)",
