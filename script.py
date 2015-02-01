@@ -13,7 +13,7 @@ cur = db.cursor()
 from string import Template
 
 cherrypy.config.update({'tools.sessions.on': True,
-               })
+			   })
 
 from string import Template
 
@@ -28,39 +28,52 @@ class StringGenerator(object):
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel='stylesheet' type='text/css' href='/static/css/login_style.css'/>
-    <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <title></title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/login_style.css">
 </head>
 <body>
-	<h1>Party Central $tell_user</h1>
+<h1>Connector</h1>
+<div class="form-group">
+    <form id="login_form" method="post" action="proposal_list_page.html">
+        <fieldset>
+            <h3>
+                Email
+            </h3>
+            <input type="text" value="" class="form-control" name="email" style="width:220px;" required/>
+            <h3>
+                Password
+            </h3>
+            <input type="password" value="" class="form-control" name="password" style="width:220px;" required/>
+            <div id="login-button">
+                <p>
+                    <button type="submit" class="btn btn-primary" id="login-button">Log in</button>
+                </p>
+            </div>
 
-        <form id="login-form" action="logged_in_page" method="post">
-            <fieldset>
-                <h3>
-                    Email
-                </h3>
-                <input type="text" value="" name="username" />
-                <h3>
-                    Password
-                </h3>
-                <input type="password" value="" name="password" />
-                <div id="signup-button">
-                    <p>
-                        <button type="submit" class="btn btn-primary">Log In</button>
-                    </p>
-                </div>
-
-            </fieldset>
-        </form>
-        <fieldset id="signup">
-            <p>
-                Don't have an account?
-            </p>
-            <p>
-                <a href="new_user_page" class="btn btn-success">Sign up</a>
-            </p>
         </fieldset>
+    </form>
+</div>
+<br><br>
+    <fieldset id="signup">
+        <p>
+            Don't have an account?
+        </p>
+        <p>
+            <a href="signup_page.html" class="btn btn-success">Sign up</a>
+        </p>
+    </fieldset>
+<br>
+    <div class="jumbotron">
+        <h2>What is Connector?</h2>
+        <p id="text">Connector is a social web app to connect you with people to do whatever you want to do. Want a group to go to the movies
+        or to come party in your room? Propose the activity, and when enough people have seen the anonymous activity idea,
+        we'll connect you guys via GroupMe automatically, and you can take it from there. What are you waiting for?</p>
+        <p align="center"><a href="signup_page.html" id="#secondsignup" class="btn btn-success btn-lg">Sign up</a></p>
+    </div>
+
+</body>
+</html>
 
 
 
@@ -74,55 +87,62 @@ class StringGenerator(object):
 	@cherrypy.expose
 	def new_user_page(self, username="", password = ""):
 		return """
+			<!DOCTYPE html>
+			<html>
+			<head lang="en">
+			    <meta charset="UTF-8">
+			    <title></title>
+			    <link rel="stylesheet" href="css/bootstrap.css">
+			    <link rel="stylesheet" href="css/signup_style.css">
+			</head>
+			<body>
+			<h2>Sign up for Connector</h2>
+			<div class="form-group">
+			    <form id="login_form" method="post" action="proposal_list_page.html">
+			        <fieldset>
+			            <h3>
+			                Email
+			            </h3>
+			            <input type="text" value="" class="form-control" name="email" style="width:220px;" required/>
+			            <h3>
+			                Password
+			            </h3>
+			            <input type="password" value="" class="form-control" name="password" style="width:220px;" required/>
+			            <h3>
+			                Confirm Password
+			            </h3>
+			            <input type="text" value="" class="form-control" name="email" style="width:220px;" required/>
+			            <h3>
+			                Phone Number
+			            </h3>
+			            <input type="tel" value="" class="form-control" name="email" style="width:220px;" required/>
+			            <div id="signup-button">
+			                <p>
+			                    <button type="submit" class="btn btn-primary" id="signup-button">Sign up</button>
+			                </p>
+			            </div>
 
-		<!DOCTYPE html>
-		<html>
-		<head lang="en">
-		    <meta charset="UTF-8">
-		    <title>Signup</title>
-		    <link rel='stylesheet' type='text/css' href='static/css/signup_style.css'/>
-		    <link rel="stylesheet" href="static/css/bootstrap.css">
-		</head>
-		<body>
+			        </fieldset>
+			    </form>
+			</div>
 
-		        <form id="signup-form" action="make_new_user" method="post">
-		            <fieldset>
-		                <h3>
-		                    Email
-		                </h3>
-		                <input type="text" value="" name="username" />
-		                <h3>
-		                    Password
-		                </h3>
-		                <input type="password" value="" name="password" />
-		                <h3>
-		                    Confirm Password
-		                </h3>
-		                <input type="password" value="" name="confirm_password"/>
-		                <div id="signup-button">
-		                    <p>
-		                        <button ty[e = "submit">Log In</a>
-		                    </p>
-		                </div>
 
-		            </fieldset>
-		        </form>
-
-		</body>
-		</html>"""
+			</body>
+			</html>
+			"""
 		
 
 	@cherrypy.expose
 	def logged_in_page(self, username, password):
 		cur.execute("SELECT username FROM user_info WHERE username=(%s)", [username])
-    	db_fetched = cur.fetchone()
+		db_fetched = cur.fetchone()
 		#print db_fetched
 		if db_fetched == None:
 			#failure to log in
 			return """<meta http-equiv="refresh" content="1;url=index?message=no such user" />"""
 		else:
 			cur.execute("SELECT password FROM user_info WHERE username=(%s)", [username])
-    		db_fetched = cur.fetchone()[0]
+			db_fetched = cur.fetchone()[0]
 			if(get_hash(password) == db_fetched):
 				cherrypy.session['username'] = username
 				#password is good
@@ -133,10 +153,10 @@ class StringGenerator(object):
 	@cherrypy.expose
 	def make_new_user(self, username="", password = "", confirm_password=""):
 		if(username != "") and password == confirm_password:
-     		cur.execute('INSERT INTO user_info (username, password, phone) VALUES (%s, %s, %s)',[username, str(get_hash(password)), "phone"])
-    		db.commit()
-    		#print "put it in"
-    		return self.logged_in_page(username,password)
+			cur.execute('INSERT INTO user_info (username, password, phone) VALUES (%s, %s, %s)',[username, str(get_hash(password)), "phone"])
+			db.commit()
+			#print "put it in"
+			return self.logged_in_page(username,password)
 		else:
 			return """<meta http-equiv="refresh" content="1;url=index?message=Please enter a username" />"""
 		#return some_string
@@ -152,27 +172,27 @@ class StringGenerator(object):
 		<!DOCTYPE html>
 			<html>
 			<head lang="en">
-			    <meta charset="UTF-8">
-			    <title>Partytown</title>
-			    <link rel="stylesheet" href="static/css/bootstrap.css">
-			    <link rel="stylesheet" href="static/css/proposal_page.css">
-			    <link rel="stylesheet" href="static/css/jquery-ui.css">
+				<meta charset="UTF-8">
+				<title>Partytown</title>
+				<link rel="stylesheet" href="static/css/bootstrap.css">
+				<link rel="stylesheet" href="static/css/proposal_page.css">
+				<link rel="stylesheet" href="static/css/jquery-ui.css">
 
 
 			</head>
 			<body>
-			    <nav class="navbar navbar-default center" role="navigation">
-			        <div class="row">
-			        <div class="col-md-4">
-			        </div>
-			        <div class="col-md-4">
-			            <a href="propose_something_page" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
-			        </div>
-			        <div class="col-md-4" align="right" id="logout">
-			            <a href="login_page.html" class="btn btn-info">Logout</a>
-			        </div>
-			      </div>
-			    </nav>
+				<nav class="navbar navbar-default center" role="navigation">
+					<div class="row">
+					<div class="col-md-4">
+					</div>
+					<div class="col-md-4">
+						<a href="propose_something_page" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
+					</div>
+					<div class="col-md-4" align="right" id="logout">
+						<a href="login_page.html" class="btn btn-info">Logout</a>
+					</div>
+				  </div>
+				</nav>
 			<div id="events">
 			"""
 
@@ -209,12 +229,12 @@ class StringGenerator(object):
 						<h3>{}<div class="success-button" align="right" id="{}"><a class="btn btn-success btn-sm">{}</a></div></h3>
 						<div >
 
-					        <p>{}</p>
-					        <p><b>Minimum size:</b> {}</p>
-					        <p><b>Maximum size:</b> {}</p>
-					        
-					    </div>
-					    """.format(str(item[0]), proposal_id, button_text, str(item[2]),str(item[3]),  str(item[4]))
+							<p>{}</p>
+							<p><b>Minimum size:</b> {}</p>
+							<p><b>Maximum size:</b> {}</p>
+							
+						</div>
+						""".format(str(item[0]), proposal_id, button_text, str(item[2]),str(item[3]),  str(item[4]))
 				
 
 
@@ -224,11 +244,11 @@ class StringGenerator(object):
 			<script src="static/js/jquery-ui.min.js"></script>
 			<script src="static/js/proposal_script.js"></script>
 			<script>
-			    $(".btn.btn-success.btn-sm").click(function(){
-			        var id_num = $(this).attr('id');
-			        jQuery.ajax("/agree_to_proposal?proposal_id="+id_num);
+				$(".btn.btn-success.btn-sm").click(function(){
+					var id_num = $(this).attr('id');
+					jQuery.ajax("/agree_to_proposal?proposal_id="+id_num);
 
-			    });
+				});
 			</script>
 			</body>
 			</html>"""
@@ -236,33 +256,58 @@ class StringGenerator(object):
 
 	@cherrypy.expose
 	def agree_to_proposal(self,proposal_id=""):
-        cur.execute('INSERT INTO agrees (proposal_id, username) VALUES (%s, %s)', [str(proposal_id), cherry.py.session['username']])
-        return """<meta http-equiv="refresh" content=1;url=proposal_list_page" />"""
+		cur.execute('INSERT INTO agrees (proposal_id, username) VALUES (%s, %s)', [str(proposal_id), cherry.py.session['username']])
+		return """<meta http-equiv="refresh" content=1;url=proposal_list_page" />"""
 
 
 
 	@cherrypy.expose
 	def propose_something_page(self):
-		result = "<html><head></head><body>"
-		result += """
-		<form method="post" action="proposal_db_insert">
-			  Proposal name<input type="text" value="" name="proposal_name" /><br>
-			  Proposal description<input type="text" value="" name="proposal_description" />
-				  
-				  <br><br>
-				  Minimum number of people
-				  """
-		result += get_n_selector(20, "min_num_people")
-		result += "Maximum number of people"
-		result += get_n_selector(50,"max_num_people")
-		result += "<button type=\"submit\">Propose!</button></form>"
-		result += "</body></html>"
-		return result
+		result = """
+		<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Propose an activity</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/activity.css">
+</head>
+<body>
+<h2>Propose something</h2>
+<div class="form-group">
+	<form id="activity_form" method="post" action="proposal_db_insert">
+		<fieldset>
+			<h3>
+				Proposal name
+			</h3>
+			<input type="text" value="" name="proposal_name" class="form-control" style="width:300px;" required>
+			<h3>
+				Proposal description
+			</h3>
+			<textarea name="proposal_description" form="activity_form" class="form-control" style="width:300px" rows="4">
+			</textarea>
+			<h3>
+				Minimum number of people
+			</h3>
+			<input type="number" value="2" name="min_num_people" class="form-control" style="width:300px;" min="2" max="20">
+			<h3>
+				Maximum number of people
+			</h3>
+			<input type="number" value="2" name="max_num_people" class="form-control" style="width:300px;" min="2" max="100">
+			<br>
+			<p><button type="submit" class="btn btn-primary" id="proposal-button">Propose!</button></p>
+		</fieldset>
+	</form>
+</div>
+
+</body>
+</html>
+"""
 
 	@cherrypy.expose
 	def proposal_db_insert(self, proposal_name="", proposal_description="", min_num_people="", max_num_people=""):
-    	cur.execute('INSERT INTO proposals (proposal_id, proposal_name, description, min_people, max_people) VALUES (%s, %s, %s, %s, %s)', [get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
-    	db.commit()
+		cur.execute('INSERT INTO proposals (proposal_id, proposal_name, description, min_people, max_people) VALUES (%s, %s, %s, %s, %s)', [get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
+		db.commit()
 		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
 
@@ -303,14 +348,14 @@ def setup_database():
 
 if __name__ == '__main__':
 	conf = {
-	     '/': {
-	         'tools.sessions.on': True,
-	         'tools.staticdir.root': os.path.abspath(os.getcwd())
-	     },
-	     '/static': {
-	         'tools.staticdir.on': True,
-	         'tools.staticdir.dir': './public'
-	     }
+		 '/': {
+			 'tools.sessions.on': True,
+			 'tools.staticdir.root': os.path.abspath(os.getcwd())
+		 },
+		 '/static': {
+			 'tools.staticdir.on': True,
+			 'tools.staticdir.dir': './public'
+		 }
 	}
 
 	cherrypy.engine.subscribe('start', setup_database)
