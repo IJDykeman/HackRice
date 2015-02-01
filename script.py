@@ -6,9 +6,13 @@ import hashlib
 from helpers import *
 import os, os.path
 
+
+
 USER_DB_STRING = "users.db"
 PROPOSALS_DB_STRING = "proposals.db"
 AGREES_DB_STRING = "agrees.db"
+
+
 from string import Template
 
 
@@ -142,32 +146,6 @@ class StringGenerator(object):
 		#return some_string
 	
 
-	def get_proposal_list(self):
-		
-		conn = sqlite3.connect(PROPOSALS_DB_STRING)
-		cursor=conn.cursor()
-		cursor.execute("SELECT proposal_name, proposal_id, description, min_people, max_people FROM proposals_db")
-		db_fetched = cursor.fetchall()	
-		return db_fetched
-
-	def get_agreement_map(self):
-		"""
-		returns a mapping of user -> set of events she agrees to
-		"""
-		conn = sqlite3.connect(AGREES_DB_STRING)
-		cursor=conn.cursor()
-		cursor.execute("SELECT username, proposal_id FROM agrees_db")
-		db_fetched = cursor.fetchall()	
-		result = {}
-		for item in db_fetched:
-			if not item[0] in result:
-				result[item[0]] = {int(item[1])}
-			else:
-				result[item[0]].add(int(item[1]))
-		return result
-
-	def get_num_proposals(self):
-		return len(self.get_proposal_list())
 
 	
 
@@ -175,11 +153,11 @@ class StringGenerator(object):
 	@cherrypy.expose
 	def proposal_list_page(self):
 		
-		agreement_map = self.get_agreement_map()
+		agreement_map = get_agreement_map()
 		print( agreement_map)
-		result = "<html><head></head><body>"+cherrypy.session['username']+"'s' proposal list: "
+		result = "<html><head></head><body>"+cherrypy.session['username']+"'s proposal list: "
 		result += """<br><a href="propose_something_page">Propose something!</a>"""
-		db_fetched = self.get_proposal_list()	
+		db_fetched = get_proposal_list()	
 		if db_fetched != None:
 			result += "<br>There are currently " + str(len(db_fetched))+ " proposals<br>"
 			for item in db_fetched:
@@ -229,7 +207,7 @@ class StringGenerator(object):
 	def proposal_db_insert(self, proposal_name="", proposal_description="", min_num_people="", max_num_people=""):
 		with sqlite3.connect(PROPOSALS_DB_STRING) as c:
 			c.execute("INSERT INTO proposals_db VALUES (?, ?, ?, ?, ?)",
-				[self.get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
+				[get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
 		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
 	@cherrypy.expose
@@ -275,7 +253,7 @@ def cleanup_database():
 	on server shutdown.
 	"""
 	print ("exit")
-	delete_databases()
+	#delete_databases()
 
 def setup_database():
 	"""
@@ -284,12 +262,16 @@ def setup_database():
 	"""
 
 	print("startup")
+	'''
 	with sqlite3.connect(USER_DB_STRING) as con:
 		con.execute("CREATE TABLE username_password_db (username, password)")
 	with sqlite3.connect(PROPOSALS_DB_STRING) as con:
 		con.execute("CREATE TABLE proposals_db (proposal_id, proposal_name, description, min_people, max_people)")
 	with sqlite3.connect(AGREES_DB_STRING) as con:
 		con.execute("CREATE TABLE agrees_db (proposal_id, username)")
+		'''
+
+
 
 
 if __name__ == '__main__':
