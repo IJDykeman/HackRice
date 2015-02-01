@@ -1,16 +1,26 @@
 *   { margin: 0; padding: 0; }
-h1  { text-align: center;}
+
 body    { font-family: Georgia, serif; color: #3a3a3a;
     text-align: center;}
 
-form    { width: 250px; height: 228px; margin: 10px auto 0;
+.form-group    { width: 250px; height: 218px; margin: 10px auto 0;
     border-radius: 10px;}
-
-fieldset	{ border: 11px solid lightgray; background-color: #4D86BF
--moz-box-sizing: border-box; }
-
-#signup-button { margin-top: 10px; margin-bottom:10px;}
-
-#signup-button a{
-    color: #ffffff;
+fieldset	{ border: 11px solid lightgray; background-color: #4D86BF  }
+input{
+    margin:auto;
 }
+
+textarea{
+    width: 300px;
+    margin:auto;
+}
+
+fieldset	{ border: 3px solid lightgray; background-color: #4D86BF  }
+
+#signup-button       { margin-top: 12px}
+
+#signup p{
+    margin-top:10px;
+}
+
+#signup             { width: 220px; height: 100px; margin: 20px auto 0;}

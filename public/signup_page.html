@@ -2,34 +2,42 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Signup</title>
-    <link rel='stylesheet' type='text/css' href='css/login_style.css'/>
+    <title></title>
     <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/signup_style.css">
 </head>
 <body>
-    <form id="signup-form" action="proposal_list_page.html" method="post">
+<h2>Sign up for Connector</h2>
+<div class="form-group">
+    <form id="login_form" method="post" action="proposal_list_page.html">
         <fieldset>
             <h3>
                 Email
             </h3>
-            <input type="text" value="" name="email" required>
+            <input type="text" value="" class="form-control" name="email" style="width:220px;" required/>
             <h3>
                 Password
             </h3>
-            <input type="password" value="" name="password" required>
+            <input type="password" value="" class="form-control" name="password" style="width:220px;" required/>
             <h3>
                 Confirm Password
             </h3>
-            <input type="password" value="" name="confirm_pass"required>
+            <input type="text" value="" class="form-control" name="email" style="width:220px;" required/>
             <h3>
                 Phone Number
             </h3>
-            <input type="tel" value="" name="phone_number"required>
-            <br>
-            <p><button type="submit" class="btn btn-primary" id="signup-button">Sign Up</button></p>
+            <input type="tel" value="" class="form-control" name="email" style="width:220px;" required/>
+            <div id="signup-button">
+                <p>
+                    <button type="submit" class="btn btn-primary" id="signup-button">Sign up</button>
+                </p>
+            </div>
 
         </fieldset>
     </form>
+</div>
+
 
 </body>
 </html>
+
