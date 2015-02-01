@@ -28,7 +28,7 @@ class StringGenerator(object):
 </head>
 <body>
 	<h1>Party Central $tell_user</h1>
-
+    <div class="col-md-4">
         <form id="login-form" action="logged_in_page" method="post">
             <fieldset>
                 <h3>
