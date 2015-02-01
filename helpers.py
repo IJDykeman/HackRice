@@ -33,10 +33,13 @@ def get_agreement_map():
 	db_fetched = cursor.fetchall()	
 	result = {}
 	for item in db_fetched:
-		if not item[0] in result:
-			result[item[0]] = {int(item[1])}
-		else:
-			result[item[0]].add(int(item[1]))
+		try: #try is necesary because while playing with DBs we have introduced some non integers where integet strings should be
+			if not item[0] in result:
+				result[item[0]] = {int(item[1])}
+			else:
+				result[item[0]].add(int(item[1]))
+		except:
+			pass
 	return result
 
 
