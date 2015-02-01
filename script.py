@@ -5,13 +5,15 @@ import cherrypy
 import hashlib
 from helpers import *
 import os, os.path
+import MySQLdb
 
+db = MySQLdb.connect(host="mysql.server", user="JamesonBruce", passwd="Hackrice2015", db="JamesonBruce$project")
+cur = db.cursor()
 
+from string import Template
 
-USER_DB_STRING = "users.db"
-PROPOSALS_DB_STRING = "proposals.db"
-AGREES_DB_STRING = "agrees.db"
-
+cherrypy.config.update({'tools.sessions.on': True,
+               })
 
 from string import Template
 
@@ -112,20 +114,15 @@ class StringGenerator(object):
 
 	@cherrypy.expose
 	def logged_in_page(self, username, password):
-		conn = sqlite3.connect(USER_DB_STRING)
-		cursor=conn.cursor()
-		cursor.execute("SELECT username FROM username_password_db WHERE username=?",
-					   [username])
-		db_fetched = cursor.fetchone()
+		cur.execute("SELECT username FROM user_info WHERE username=(%s)", [username])
+    	db_fetched = cur.fetchone()
 		#print db_fetched
 		if db_fetched == None:
 			#failure to log in
 			return """<meta http-equiv="refresh" content="1;url=index?message=no such user" />"""
 		else:
-			cursor=conn.cursor()
-			cursor.execute("SELECT password FROM username_password_db WHERE username=?",
-		 				   [username])
-			db_fetched = cursor.fetchone()[0]
+			cur.execute("SELECT password FROM user_info WHERE username=(%s)", [username])
+    		db_fetched = cur.fetchone()[0]
 			if(get_hash(password) == db_fetched):
 				cherrypy.session['username'] = username
 				#password is good
@@ -135,12 +132,11 @@ class StringGenerator(object):
 	
 	@cherrypy.expose
 	def make_new_user(self, username="", password = "", confirm_password=""):
-		if(username != ""):
-			with sqlite3.connect(USER_DB_STRING) as conn:
-				conn.execute("INSERT INTO username_password_db VALUES (?, ?)",
-					[username, get_hash(password)])
-			#print "put it in"
-			return self.logged_in_page(username,password)
+		if(username != "") and password == confirm_password:
+     		cur.execute('INSERT INTO user_info (username, password, phone) VALUES (%s, %s, %s)',[username, str(get_hash(password)), "phone"])
+    		db.commit()
+    		#print "put it in"
+    		return self.logged_in_page(username,password)
 		else:
 			return """<meta http-equiv="refresh" content="1;url=index?message=Please enter a username" />"""
 		#return some_string
@@ -240,10 +236,8 @@ class StringGenerator(object):
 
 	@cherrypy.expose
 	def agree_to_proposal(self,proposal_id=""):
-		with sqlite3.connect(AGREES_DB_STRING) as conn:
-			conn.execute("INSERT INTO agrees_db VALUES (?, ?)",
-				[str(proposal_id),cherrypy.session['username']])
-		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
+        cur.execute('INSERT INTO agrees (proposal_id, username) VALUES (%s, %s)', [str(proposal_id), cherry.py.session['username']])
+        return """<meta http-equiv="refresh" content=1;url=proposal_list_page" />"""
 
 
 
@@ -267,40 +261,11 @@ class StringGenerator(object):
 
 	@cherrypy.expose
 	def proposal_db_insert(self, proposal_name="", proposal_description="", min_num_people="", max_num_people=""):
-		with sqlite3.connect(PROPOSALS_DB_STRING) as c:
-			c.execute("INSERT INTO proposals_db VALUES (?, ?, ?, ?, ?)",
-				[get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
+    	cur.execute('INSERT INTO proposals (proposal_id, proposal_name, description, min_people, max_people) VALUES (%s, %s, %s, %s, %s)', [get_num_proposals()+1, proposal_name, proposal_description, int(min_num_people), int(max_num_people)])
+    	db.commit()
 		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
-	@cherrypy.expose
-	def edit_card(self, proposal_id = ""):
-		print("in edit card")
-		conn = sqlite3.connect(PROPOSALS_DB_STRING)
-		cursor=conn.cursor()
-		cursor.execute("SELECT college_name, description FROM proposals_db WHERE proposal_id=? and username=?",
-				[ int(proposal_id), cherrypy.session['username']])
-		db_fetched = cursor.fetchone()	
-		result = Template("""<html>
-			<head></head>
-			<body>
-			<form method="post" action="save_card_form?proposal_id=$cardid">
-			  <input type="text" value="$school_name" name="school_name" />
-			  <input type="text" value="$description" name="description" />
-				  <button type="submit">Save</button>
-			</form>
-			<br>
-			<a href="proposal_list_page">Back to card list</a>
-		  </body>
-		</html>""")
-		
-		return str (result.substitute(school_name = db_fetched[0], description = db_fetched[1], cardid = proposal_id))
 
-	@cherrypy.expose
-	def save_card_form(self, school_name="", proposal_description="", proposal_id=""):
-		with sqlite3.connect(PROPOSALS_DB_STRING) as c:
-			c.execute("UPDATE proposals_db SET college_name=?, description=? WHERE proposal_id=? and username=?",
-				[school_name, description, int(proposal_id), cherrypy.session['username']  ])
-		return "<meta http-equiv=\"refresh\" content=\"1;url=edit_card?proposal_id="+proposal_id + "\" />"
 def delete_databases():
 	with sqlite3.connect(USER_DB_STRING) as con:
 		con.execute("DROP TABLE username_password_db")
