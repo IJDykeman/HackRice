@@ -97,7 +97,7 @@ class StringGenerator(object):
 		else:
 			cursor=conn.cursor()
 			cursor.execute("SELECT password FROM username_password_db WHERE username=?",
-						   [username])
+		 				   [username])
 			db_fetched = cursor.fetchone()[0]
 			if(get_hash(password) == db_fetched):
 				cherrypy.session['username'] = username
@@ -271,14 +271,14 @@ def setup_database():
 
 if __name__ == '__main__':
 	conf = {
-		'/': {
-			'tools.sessions.on': True,
-			'tools.staticdir.root': os.path.abspath(os.getcwd())
-		},
-		'/static': {
-			'tools.staticdir.on': True,
-			'tools.staticdir.dir': './public'
-		}
+	     '/': {
+	         'tools.sessions.on': True,
+	         'tools.staticdir.root': os.path.abspath(os.getcwd())
+	     },
+	     '/static': {
+	         'tools.staticdir.on': True,
+	         'tools.staticdir.dir': './public'
+	     }
 	}
 
 	cherrypy.engine.subscribe('start', setup_database)
