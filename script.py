@@ -212,12 +212,13 @@ class StringGenerator(object):
 				result += """
 						<h3>{}</h3>
 						<div >
+						<div class="success-button" align="right"><a href="agree_to_proposal?proposal_id={}" class="btn btn-success">{}</a></div>
 					        <p>{}</p>
 					        <p><b>Minimum size:</b> {}</p>
 					        <p><b>Maximum size:</b> {}</p>
-					        <div class="success-button" align="center"><a href="agree_to_proposal?proposal_id={}" class="btn btn-success">{}</a></div>
+					        
 					    </div>
-					    """.format(str(item[0]), str(item[2]),str(item[3]),  str(item[4]) , proposal_id, button_text)
+					    """.format(str(item[0]), proposal_id, button_text, str(item[2]),str(item[3]),  str(item[4]))
 				
 
 				'''
