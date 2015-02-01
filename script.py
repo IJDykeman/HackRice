@@ -152,16 +152,60 @@ class StringGenerator(object):
 
 	@cherrypy.expose
 	def proposal_list_page(self):
-		
+		result = """
+		<!DOCTYPE html>
+			<html>
+			<head lang="en">
+			    <meta charset="UTF-8">
+			    <title>Partytown</title>
+			    <link rel="stylesheet" href="css/bootstrap.css">
+			    <link rel="stylesheet" href="css/proposal_page.css">
+			    <link rel="stylesheet" href="jquery-ui.css">
+
+
+			</head>
+			<body>
+			    <nav class="navbar navbar-default center" role="navigation">
+			        <div class="row">
+			        <div class="col-md-4">
+			        </div>
+			        <div class="col-md-4">
+			            <a href="#" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
+			        </div>
+			        <div class="col-md-4" align="right" id="logout">
+			            <a href="login_page.html" class="btn btn-info">Logout</a>
+			        </div>
+			      </div>
+			    </nav>
+			<div id="events">
+			"""
+
+
 		agreement_map = get_agreement_map()
 		print( agreement_map)
-		result = "<html><head></head><body>"+cherrypy.session['username']+"'s proposal list: "
-		result += """<br><a href="propose_something_page">Propose something!</a>"""
 		db_fetched = get_proposal_list()	
 		if db_fetched != None:
-			result += "<br>There are currently " + str(len(db_fetched))+ " proposals<br>"
 			for item in db_fetched:
+
+				result += "<h3>"+str(item[2])+"</h3>"
+				result += "<p><b>Minimum size:</b> "+ str(item[3]) + "</p>"
+				result += "<p><b>Maximum size:</b> " + str(item[4]) + "</p>"
 				proposal_id = str(item[1])
+				result += """<div class="success-button" align="center"><a href="agree_to_proposal?proposal_id="""+proposal_id+"""\" class="btn btn-success">"""
+				username = cherrypy.session['username']
+				if username in agreement_map and not int(proposal_id) in agreement_map[username]:
+					result += "Let's do it"
+				elif not username in agreement_map:
+					result += "Let's do it"
+				else:
+					result += "I'm down."
+
+
+				result += "</a></div>"
+
+
+
+				'''
 				username = cherrypy.session['username']
 				result += """<a href = "agree_to_proposal?proposal_id="""+proposal_id+"""\">"""
 				if username in agreement_map and not int(proposal_id) in agreement_map[username]:
@@ -172,8 +216,15 @@ class StringGenerator(object):
 					result += "You are attending"
 				result += "</a>"
 				result +=str(item[0]) + "<br>---"+str(item[2])+"("+str(item[3])+"-"+str(item[4])+" people)" + "<br>"
+				'''
 		
-		result += "</body></html>"
+		result += """</div>
+
+			<script src="jquery.js"></script>
+			<script src="jquery-ui.min.js"></script>
+			<script src="js/proposal_script.js"></script>
+			</body>
+			</html>"""
 		return result
 
 	@cherrypy.expose
