@@ -1,0 +1,12 @@
+.navbar.center .navbar-inner {
+    text-align: center;
+}
+.navbar.center .navbar-inner .nav {
+    float: none;
+    display:inline-block;
+}
+
+#logout{
+    margin-left: 0;
+    margin-top: 8px
+}

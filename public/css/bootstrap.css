@@ -4368,14 +4368,14 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-left {
     float: left !important;
   }
-  .navbar-right {
-    float: right !important;
-    margin-right: -15px;
+  .navbar-center{
+      text-align:center;
   }
-  .navbar-right ~ .navbar-right {
-    margin-right: 0;
-  }
+  .navbar.center .navbar-inner .nav {
+    display:inline-block;
+    float: none;
 }
+
 .navbar-default {
   background-color: #dd4814;
   border-color: #bf3e11;
