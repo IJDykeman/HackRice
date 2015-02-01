@@ -4,6 +4,7 @@ import sqlite3
 import cherrypy
 import hashlib
 from helpers import *
+import os, os.path
 
 USER_DB_STRING = "users.db"
 PROPOSALS_DB_STRING = "proposals.db"
@@ -13,19 +14,52 @@ from string import Template
 
 class StringGenerator(object):
 	@cherrypy.expose
-	def index(self, message = "Welcome"):
-		result = Template("""<html>
-			<head></head>
-			<body>
-			$tell_user
-			<form method="post" action="logged_in_page">
-			  <input type="text" value="" name="username" />
-			  <input type="text" value="" name="password" />
-				  <button type="submit">Sign in</button>
-			</form>
-			<a href="new_user_page">sign up to start making cards</a>
-		  </body>
-		</html>""")
+	def index(self, message = ""):
+		result = Template(
+
+			"""
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel='stylesheet' type='text/css' href='/static/css/login_style.css'/>
+    <link rel="stylesheet" href="/static/css/bootstrap.css">
+</head>
+<body>
+	<h1>Party Central $tell_user</h1>
+    <div class="col-md-4">
+        <form id="login-form" action="logged_in_page" method="post">
+            <fieldset>
+                <h3>
+                    Email
+                </h3>
+                <input type="text" value="" name="username" />
+                <h3>
+                    Password
+                </h3>
+                <input type="password" value="" name="password" />
+                <div id="signup-button">
+                    <p>
+                        <button type="submit" class="btn btn-primary">Log In</button>
+                    </p>
+                </div>
+
+            </fieldset>
+        </form>
+        <fieldset id="signup">
+            <p>
+                Don't have an account?
+            </p>
+            <p>
+                <a href="new_user_page" class="btn btn-success">Sign up</a>
+            </p>
+        </fieldset>
+    </div>
+
+
+
+			""")
 		
 		return str (result.substitute(tell_user = message))
 
@@ -61,7 +95,7 @@ class StringGenerator(object):
 		else:
 			cursor=conn.cursor()
 			cursor.execute("SELECT password FROM username_password_db WHERE username=?",
-						   [username])
+		 				   [username])
 			db_fetched = cursor.fetchone()[0]
 			if(get_hash(password) == db_fetched):
 				cherrypy.session['username'] = username
@@ -90,23 +124,50 @@ class StringGenerator(object):
 		cursor.execute("SELECT proposal_name, proposal_id, description, min_people, max_people FROM proposals_db")
 		db_fetched = cursor.fetchall()	
 		return db_fetched
-	
+
+	def get_agreement_map(self):
+		"""
+		returns a mapping of user -> set of events she agrees to
+		"""
+		conn = sqlite3.connect(AGREES_DB_STRING)
+		cursor=conn.cursor()
+		cursor.execute("SELECT username, proposal_id FROM agrees_db")
+		db_fetched = cursor.fetchall()	
+		result = {}
+		for item in db_fetched:
+			if not item[0] in result:
+				result[item[0]] = {int(item[1])}
+			else:
+				result[item[0]].add(int(item[1]))
+		return result
 
 	def get_num_proposals(self):
 		return len(self.get_proposal_list())
 
+	
+
 
 	@cherrypy.expose
 	def proposal_list_page(self):
+		
+		agreement_map = self.get_agreement_map()
+		print( agreement_map)
 		result = "<html><head></head><body>"+cherrypy.session['username']+"'s' proposal list: "
 		result += """<br><a href="propose_something_page">Propose something!</a>"""
 		db_fetched = self.get_proposal_list()	
 		if db_fetched != None:
 			result += "<br>There are currently " + str(len(db_fetched))+ " proposals<br>"
 			for item in db_fetched:
-
-
-				result += """<a href = "agree_to_proposal?proposal_id=\""""+str(item[1])+""">Click to Attend</a>"""
+				proposal_id = str(item[1])
+				username = cherrypy.session['username']
+				result += """<a href = "agree_to_proposal?proposal_id="""+proposal_id+"""\">"""
+				if username in agreement_map and not int(proposal_id) in agreement_map[username]:
+					result += "Click to Attend"
+				elif not username in agreement_map:
+					result += "Click to Attend"
+				else:
+					result += "You are attending"
+				result += "</a>"
 				result +=str(item[0]) + "<br>---"+str(item[2])+"("+str(item[3])+"-"+str(item[4])+" people)" + "<br>"
 		
 		result += "</body></html>"
@@ -116,8 +177,10 @@ class StringGenerator(object):
 	def agree_to_proposal(self,proposal_id=""):
 		with sqlite3.connect(AGREES_DB_STRING) as conn:
 			conn.execute("INSERT INTO agrees_db VALUES (?, ?)",
-				[username, proposal_id])
+				[str(proposal_id),cherrypy.session['username']])
 		return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
+
+
 
 	@cherrypy.expose
 	def propose_something_page(self):
@@ -130,9 +193,9 @@ class StringGenerator(object):
 				  <br><br>
 				  Minimum number of people
 				  """
-		result += get_n_selector(20, "max_num_people")
+		result += get_n_selector(20, "min_num_people")
 		result += "Maximum number of people"
-		result += get_n_selector(50,"min_num_people")
+		result += get_n_selector(50,"max_num_people")
 		result += "<button type=\"submit\">Propose!</button></form>"
 		result += "</body></html>"
 		return result
@@ -186,6 +249,7 @@ def cleanup_database():
 	Destroy the `username_password_db` table from the database
 	on server shutdown.
 	"""
+	print ("exit")
 	delete_databases()
 
 def setup_database():
@@ -205,10 +269,16 @@ def setup_database():
 
 if __name__ == '__main__':
 	conf = {
-		'/': {
-			'tools.sessions.on': True
-		}
+	     '/': {
+	         'tools.sessions.on': True,
+	         'tools.staticdir.root': os.path.abspath(os.getcwd())
+	     },
+	     '/static': {
+	         'tools.staticdir.on': True,
+	         'tools.staticdir.dir': './public'
+	     }
 	}
+
 	cherrypy.engine.subscribe('start', setup_database)
 	cherrypy.engine.subscribe('stop', cleanup_database)
 	cherrypy.quickstart(StringGenerator(), '/', conf)
