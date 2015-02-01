@@ -1,0 +1,19 @@
+*   { margin: 0; padding: 0; }
+
+body    { font-family: Georgia, serif; color: #3a3a3a;
+    text-align: center;}
+
+form    { width: 330px; height: 218px; margin: 10px auto 0;
+    border-radius: 10px;}
+input{
+    margin:auto;
+}
+
+textarea{
+    width: 300px;
+    margin:auto;
+}
+
+fieldset	{ border: 3px solid lightgray; background-color: #4D86BF  }
+
+#signup-button { margin-top: 10px; margin-bottom:10px;}
