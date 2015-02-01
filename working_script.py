@@ -75,35 +75,35 @@ class StringGenerator(object):
     	<!DOCTYPE html>
     	<html>
     	<head lang="en">
-    	    <meta charset="UTF-8">
-    	    <title>Signup</title>
-    	    <link rel='stylesheet' type='text/css' href='static/css/signup_style.css'/>
-    	    <link rel="stylesheet" href="static/css/bootstrap.css">
+    	   <meta charset="UTF-8">
+    	   <title>Signup</title>
+    	   <link rel='stylesheet' type='text/css' href='static/css/signup_style.css'/>
+    	   <link rel="stylesheet" href="static/css/bootstrap.css">
     	</head>
     	<body>
 
-    	        <form id="signup-form" action="make_new_user" method="post">
-    	            <fieldset>
-    	                <h3>
-    	                    Email
-    	                </h3>
-    	                <input type="text" value="" name="username" />
-    	                <h3>
-    	                    Password
-    	                </h3>
-    	                <input type="password" value="" name="password" />
-    	                <h3>
-    	                    Confirm Password
-    	                </h3>
-    	                <input type="password" value="" name="confirm_password"/>
-    	                <div id="signup-button">
-    	                    <p>
-    	                        <button ty[e = "submit">Log In</a>
-    	                    </p>
-    	                </div>
+    	      <form id="signup-form" action="make_new_user" method="post">
+    	         <fieldset>
+    	            <h3>
+    	               Email
+    	            </h3>
+    	            <input type="text" value="" name="username" />
+    	            <h3>
+    	               Password
+    	            </h3>
+    	            <input type="password" value="" name="password" />
+    	            <h3>
+    	               Confirm Password
+    	            </h3>
+    	            <input type="password" value="" name="confirm_password"/>
+    	            <div id="signup-button">
+    	               <p>
+    	                  <button ty[e = "submit">Log In</a>
+    	               </p>
+    	            </div>
 
-    	            </fieldset>
-    	        </form>
+    	         </fieldset>
+    	      </form>
 
     	</body>
     	</html>"""
@@ -121,9 +121,9 @@ class StringGenerator(object):
     		cur.execute("SELECT password FROM user_info WHERE username=(%s)", [username])
     		db_fetched = cur.fetchone()[0]
     		if(get_hash(password) == db_fetched):
-    		    cherrypy.session['username'] = username
+    		  cherrypy.session['username'] = username
     			# password is good
-    		    return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
+    		  return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
     		else:
     			return """<meta http-equiv="refresh" content="1;url=index?message=wrong password" />"""
 
@@ -149,26 +149,26 @@ class StringGenerator(object):
     	<!DOCTYPE html>
     		<html>
     		<head lang="en">
-    		    <meta charset="UTF-8">
-    		    <title>Partytown</title>
-    		    <link rel="stylesheet" href="static/css/bootstrap.css">
-    		    <link rel="stylesheet" href="static/css/proposal_page.css">
-    		    <link rel="stylesheet" href="static/css/jquery-ui.css">
+    		  <meta charset="UTF-8">
+    		  <title>Partytown</title>
+    		  <link rel="stylesheet" href="static/css/bootstrap.css">
+    		  <link rel="stylesheet" href="static/css/proposal_page.css">
+    		  <link rel="stylesheet" href="static/css/jquery-ui.css">
 
     		</head>
     		<body>
-    		    <nav class="navbar navbar-default center" role="navigation">
-    		        <div class="row">
-    		        <div class="col-md-4">
-    		        </div>
-    		        <div class="col-md-4">
-    		            <a href="propose_something_page" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
-    		        </div>
-    		        <div class="col-md-4" align="right" id="logout">
-    		            <a href="login_page.html" class="btn btn-info">Logout</a>
-    		        </div>
-    		      </div>
-    		    </nav>
+    		  <nav class="navbar navbar-default center" role="navigation">
+    		    <div class="row">
+    		    <div class="col-md-4">
+    		    </div>
+    		    <div class="col-md-4">
+    		      <a href="propose_something_page" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
+    		    </div>
+    		    <div class="col-md-4" align="right" id="logout">
+    		      <a href="login_page.html" class="btn btn-info">Logout</a>
+    		    </div>
+    		    </div>
+    		  </nav>
     		<div id="events">
     		"""
     	agreement_map = get_agreement_map()
@@ -216,11 +216,11 @@ class StringGenerator(object):
     		<script src="static/js/jquery-ui.min.js"></script>
     		<script src="static/js/proposal_script.js"></script>
     		<script>
-    		    $(".btn.btn-success.btn-sm").click(function(){
-    		        var id_num = $(this).attr('id');
-    		        jQuery.ajax("/agree_to_proposal?proposal_id="+id_num);
+    		  $(".btn.btn-success.btn-sm").click(function(){
+    		    var id_num = $(this).attr('id');
+    		    jQuery.ajax("/agree_to_proposal?proposal_id="+id_num);
 
-    		    });
+    		  });
     		</script>
     		</body>
     		</html>"""
@@ -237,8 +237,8 @@ class StringGenerator(object):
 
 #	@cherrypy.expose
 # 	def agree_to_proposal(self, proposal_id=""):
-# 	    cur.execute('INSERT INTO agrees (proposal_id, username) VALUES (%s, %s)', [str(proposal_id), cherrypy.session['username']])
-#         return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
+# 	 cur.execute('INSERT INTO agrees (proposal_id, username) VALUES (%s, %s)', [str(proposal_id), cherrypy.session['username']])
+#       return """<meta http-equiv="refresh" content="1;url=proposal_list_page" />"""
 
 # 		with sqlite3.connect(AGREES_DB_STRING) as conn:
 # 			conn.execute("INSERT INTO agrees_db VALUES (?, ?)",
@@ -339,14 +339,14 @@ def setup_database():
 
 if __name__ == '__main__':
 	conf = {
-	     '/': {
-	         'tools.sessions.on': True,
-	         'tools.staticdir.root': os.path.abspath(os.getcwd())
-	     },
-	     '/static': {
-	         'tools.staticdir.on': True,
-	         'tools.staticdir.dir': './public'
-	     }
+	    '/': {
+	       'tools.sessions.on': True,
+	       'tools.staticdir.root': os.path.abspath(os.getcwd())
+	    },
+	    '/static': {
+	       'tools.staticdir.on': True,
+	       'tools.staticdir.dir': './public'
+	    }
 	}
 
 	cherrypy.engine.subscribe('start', setup_database)
