@@ -6,12 +6,17 @@
     display:inline-block;
 }
 
+
+
 #logout{
-    margin-left: 0;
+    margin-left: -8px;
     margin-top: 8px
 }
 
-#events{
-    bottom:1px;
+#events div{
+    margin-top: -17px;
 }
 
+#events a{
+    color: #FFFFFF;
+}
