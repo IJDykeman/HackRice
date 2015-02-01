@@ -5,8 +5,7 @@
     <title>Partytown</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/proposal_page.css">
-    <script type='text/javascript' src='js/proposal_script.js'></script>
-    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="jquery-ui.css">
 
 
 </head>
@@ -19,29 +18,40 @@
             <a href="#" class="btn btn-success btn-lg btn-block">What do you want to do?</a>
         </div>
         <div class="col-md-4" align="right" id="logout">
-            <a href="#" class="btn btn-info">Logout</a>
+            <a href="login_page.html" class="btn btn-info">Logout</a>
         </div>
       </div>
     </nav>
-    <div id="events">
-        <h3>Go to see Interstellar</h3>
-        <div>
-                Christopher Nolan is dope.
-        </div>
-        <h3>21st birthday, 21 drinks</h3>
-        <div>
-
-                Alcohol poisoning is clearly an intelligent idea.
-
-        </div>
-        <h3>Pee on Will Rice</h3>
-        <div>
-
-                It's not like you have anything better to do.
-
-        </div>
+<div id="events">
+	<h3 id="event_title1">Go to see Interstellar</h3>
+	<div id="event_content1">
+        <p>Christopher Nolan is dope.</p>
+        <p><b>Minimum size:</b> 2</p>
+        <p><b>Maximum size:</b> 10</p>
+        <div class="success-button" align="center" id="event_button1"><a href="#" class="btn btn-success">Let's do it.</a></div>
     </div>
+	<h3 id="event_title2">21 drinks, 21 years</h3>
+	<div id="event_content2">
+        <p>Sounds like an average night.</p>
+        <p><b>Minimum size:</b> 2</p>
+        <p><b>Maximum size:</b> 10</p>
+        <div class="success-button" align="center" id="event_button2"><a href="#" class="btn btn-success">Let's do it.</a></div>
+    </div>
+	<h3 id="event_title3">Pee on Will Rice</h3>
+	<div id="event_content3">
+        <p>They've got to feel acknowledged somehow.</p>
+        <p><b>Minimum size:</b> 2</p>
+        <p><b>Maximum size:</b> 10</p>
+        <div class="success-button" align="center" id="event_button3"><a href="#" class="btn btn-success">Let's do it.</a></div>
+
+    </div>
+</div>
 
 
+
+
+<script src="jquery.js"></script>
+<script src="jquery-ui.min.js"></script>
+<script src="js/proposal_script.js"></script>
 </body>
 </html>
